@@ -28,7 +28,7 @@ class FilterVmAction(NovaAction):
         if str(metadata.get('evacuate')).upper() == 'TRUE':
             return Result(data={'status': 0, 'uuid': self._uuid})
         elif str(metadata.get('evacuate')).upper() == 'FALSE':
-            return Result(error='sie nie udalo!!!!1111jeden')
+            return Result(error='evacuate for vm %s is disabled' % self._uuid)
 
         # ether is no metadata for vm - check flavor
         flavors = client.flavors.list()
@@ -42,4 +42,4 @@ class FilterVmAction(NovaAction):
         if str(evacuate).upper() == 'TRUE':
             return Result(data={'status': 0, 'uuid': self._uuid})
 
-        return Result(data='1', error=True)
+        return Result(error='evacuate for vm %s is disabled' % self._uuid)

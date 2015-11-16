@@ -7,8 +7,8 @@ using Mistral.
 Installation
 ------------
 
-#. Copy ``filter_vm.py`` to the place reachable by python interpreter - see
-   ``PYTHONPATH`` or ``sys.path`` for reference.
+#. Copy ``filter_vm_action.py`` to the place reachable by python interpreter -
+   see ``PYTHONPATH`` or ``sys.path`` for reference.
 #. Append line
 
    .. code:: ini
@@ -16,7 +16,7 @@ Installation
       [entry_points]
       mistral.actions =
           …
-          custom.filter_vms = evac_poc:FilterAndEvacuate
+          custom.filter_vm = filter_vm_action:FilterVmAction
 
    to ``setup.cfg`` file under Mistral repository
 #. Reinstall Mistral if it was installed in system (not in virtualenv).
@@ -36,7 +36,7 @@ Installation
 
    .. code:: shell-session
 
-      $ mistral workflow-create evacuate-workflow.yaml
+      $ mistral workflow-create host-evacuate.yaml
 
 #. Create JSON file with content similar to:
 
@@ -49,4 +49,9 @@ Installation
      }
 
 #. Trigger the action via:
-   TBD
+
+   .. code:: shell-session
+
+      $ mistral execution-create host-evacuate input.json
+
+   where ``input.json`` is a file created in previous step.
