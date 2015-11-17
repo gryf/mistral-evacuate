@@ -8,6 +8,10 @@ from mistral.actions.openstack.actions import NovaAction
 from mistral.workflow.utils import Result
 
 
+class FilterVmException(Exception):
+    pass
+
+
 class FilterVmAction(NovaAction):
     """
     Filter and return VMs whith the flag 'evacuate' either on vm metadtata
@@ -31,11 +35,10 @@ class FilterVmAction(NovaAction):
             return Result(error='evacuate for vm %s is disabled' % self._uuid)
 
         # ether is no metadata for vm - check flavor
-        flavors = client.flavors.list()
         try:
-            flavor = filter(lambda x: x.id == self._flavor, flavors)[0]
-        except:
-            raise Exception('Flavor not found')
+            flavor = [x for x in client.flavors.list() if x.id == '1'][0]
+        except IndexError:
+            raise FilterVmException('Flavor not found')
 
         evacuate = flavor.get_keys().get('evacuation:evacuate')
 
