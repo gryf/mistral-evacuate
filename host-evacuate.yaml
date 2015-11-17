@@ -17,7 +17,7 @@ host-evacuate:
             publish:
                 vms: <% $.list_vms %>
             on-success: filter_vms
-        
+
         filter_vms:
             with-items: vm in <% $.vms %>
             action: custom.filter_vm flavor=<% $.vm.flavor.id %> metadata=<% $.vm.metadata %> uuid=<% $.vm.id %>
