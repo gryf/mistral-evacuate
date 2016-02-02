@@ -30,19 +30,26 @@ class FilterVmAction(NovaAction):
         metadata = self._metadata
 
         if str(metadata.get('evacuate')).upper() == 'TRUE':
-            return Result(data={'status': 0, 'uuid': self._uuid})
+            return Result(data={'evacuate': True, 'uuid': self._uuid})
         elif str(metadata.get('evacuate')).upper() == 'FALSE':
-            return Result(error='evacuate for vm %s is disabled' % self._uuid)
+            return Result(data={'evacuate': False, 'uuid': self._uuid})
 
-        # ether is no metadata for vm - check flavor
+        # Ether is no metadata for vm - check flavor.
         try:
-            flavor = [x for x in client.flavors.list() if x.id == '1'][0]
+            # Maybe this should be done in different action
+            # only once per whole workflow.
+            # In case there is ~100 VMs to evacuate, there will be
+            # the same amount of calls to nova API.
+            flavor = filter(
+                lambda f: f.id == self._flavor,
+                client.flavors.list()
+            )[0]
         except IndexError:
             raise FilterVmException('Flavor not found')
 
         evacuate = flavor.get_keys().get('evacuation:evacuate')
 
         if str(evacuate).upper() == 'TRUE':
-            return Result(data={'status': 0, 'uuid': self._uuid})
+            return Result(data={'evacuate': True, 'uuid': self._uuid})
 
-        return Result(error='evacuate for vm %s is disabled' % self._uuid)
+        return Result(data={'evacuate': False, 'uuid': self._uuid})

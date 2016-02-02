@@ -8,9 +8,6 @@ host-evacuate:
     input:
         - search_opts
 
-    output:
-        vm_list: <% $.list_vms %>
-
     tasks:
         list_vms:
             action: nova.servers_list search_opts=<% $.search_opts %>
@@ -20,11 +17,11 @@ host-evacuate:
 
         filter_vms:
             with-items: vm in <% $.vms %>
-            action: custom.filter_vm flavor=<% $.vm.flavor.id %> metadata=<% $.vm.metadata %> uuid=<% $.vm.id %>
+            action: custom.filter flavor=<% $.vm.flavor.id %> metadata=<% $.vm.metadata %> uuid=<% $.vm.id %>
             publish:
-                filtered_vms: <% $.filter_vms.uuid %>
+                filtered_vms: <% $.filter_vms %>
             on-success: evacuate_vms
 
         evacuate_vms:
-            with-items: vm_uuid in <% $.filtered_vms %>
-            action: nova.servers_evacuate server=<% $.vm_uuid %> on_shared_storage=false
+            with-items: vm in <% $.filtered_vms %>
+            action: custom.evacuate uuid=<% $.vm.uuid %> evacuate=<% $.vm.evacuate %> on_shared_storage=false
