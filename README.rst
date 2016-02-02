@@ -7,7 +7,7 @@ using Mistral.
 Installation
 ------------
 
-#. Copy ``filter_vm_action.py`` and ``evacuate_vm_action``
+#. Copy ``filter_vm_action.py`` and ``evacuate_vm_action.py``
    to the place reachable by python interpreter -
    see ``PYTHONPATH`` or ``sys.path`` for reference.
 #. Append lines
@@ -18,7 +18,7 @@ Installation
       mistral.actions =
           …
           custom.filter_vm = filter_vm_action:FilterVmAction
-          custom.evacuate = mistral.actions.evacuate_vm_action:EvacuateVmAction
+          custom.evacuate = evacuate_vm_action:EvacuateVmAction
 
    to ``setup.cfg`` file under Mistral repository
 #. Run db-sync tool via either
