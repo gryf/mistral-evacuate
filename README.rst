@@ -46,7 +46,8 @@ Installation
      {
          "search_opts": {
              "host": "compute-hostanme"
-         }
+         },
+         "on_shared_storage": false
      }
 
 #. Trigger the action via:

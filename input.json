@@ -1,4 +1,6 @@
 {
-  "search_opts": {"host": "compute1"},
+  "search_opts": {
+    "host": "compute1"
+  },
   "on_shared_storage": false
 }
