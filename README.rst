@@ -18,7 +18,7 @@ Installation
       mistral.actions =
           …
           custom.filter_vm = filter_vm_action:FilterVmAction
-          custom.evacuate = evacuate_vm_action:EvacuateVmAction
+          custom.find_flavors = find_flavors_by_extra_spec:FindFlavorsByExtraSpecs
 
    to ``setup.cfg`` file under Mistral repository
 #. Run db-sync tool via either
@@ -47,7 +47,10 @@ Installation
          "search_opts": {
              "host": "compute-hostanme"
          },
-         "on_shared_storage": false
+         "on_shared_storage": false,
+         "flavor_extra_specs": {
+             "evacuation:evacuate": true
+         }
      }
 
 #. Trigger the action via:
