@@ -7,6 +7,7 @@ host-evacuate:
 
     input:
         - search_opts
+        - on_shared_storage
 
     tasks:
         list_vms:
@@ -24,4 +25,4 @@ host-evacuate:
 
         evacuate_vms:
             with-items: vm in <% $.filtered_vms %>
-            action: custom.evacuate uuid=<% $.vm.uuid %> evacuate=<% $.vm.evacuate %> on_shared_storage=false
+            action: custom.evacuate uuid=<% $.vm.uuid %> evacuate=<% $.vm.evacuate %> on_shared_storage=<% $.on_shared_storage %>
