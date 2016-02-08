@@ -2,7 +2,10 @@ Mistral evacuate plugin
 =======================
 
 This is a PoC for providing automatic evacuation for VMs in OpenStack cloud
-using Mistral.
+using Mistral. It uses flavor extra specs and VM metadata to tell if given
+instance should be evacuated. Extra spec is 'evacuation:evacuate' and VM
+metadata is 'evacuate'. If one of them is set to True, instance will be
+evacuated.
 
 Installation
 ------------
