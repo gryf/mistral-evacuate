@@ -22,7 +22,13 @@ host-evacuate:
             publish:
                 filtered_vms: <% $.filter_vms %>
             on-success: evacuate_vms
+            retry:
+                delay: 5
+                count: 10
 
         evacuate_vms:
             with-items: vm in <% $.filtered_vms %>
             action: custom.evacuate uuid=<% $.vm.uuid %> evacuate=<% $.vm.evacuate %> on_shared_storage=<% $.on_shared_storage %>
+            retry:
+                delay: 5
+                count: 10
