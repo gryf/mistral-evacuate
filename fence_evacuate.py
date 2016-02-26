@@ -24,36 +24,36 @@ def define_new_opts():
     all_opt["user"] = {
         "getopt": "u:",
         "longopt": "user",
-        "help": "-u, --rabbit_user=string User to connect to Mistral",
+        "help": "-u, --user=string User to connect to Keystone",
         "required": "1",
-        "shortdesc": "User to connect to Mistral",
+        "shortdesc": "User to connect to Keystone",
         "default": "",
         "order": 5,
     }
     all_opt["password"] = {
         "getopt": "p:",
         "longopt": "password",
-        "help": "-p, --password=string Password to connect to Mistral",
+        "help": "-p, --password=string Password to connect to Keystone",
         "required": "1",
-        "shortdesc": "Password to connect to Mistral",
+        "shortdesc": "Password to connect to Keystone",
         "default": "",
         "order": 5,
     }
     all_opt["tenant"] = {
         "getopt": "t:",
         "longopt": "tenant",
-        "help": "-t, --tenant=string Tenant name to connect to Mistral",
+        "help": "-t, --tenant=string Tenant name to connect to Keystone",
         "required": "1",
-        "shortdesc": "Tenant name to connect to Mistral",
+        "shortdesc": "Tenant name to connect to Keystone",
         "default": "",
         "order": 5,
     }
     all_opt["auth_url"] = {
         "getopt": "a:",
         "longopt": "auth_url",
-        "help": "-a, --auth_url=string auth_url to connect to Mistral",
+        "help": "-a, --auth_url=string auth_url to connect to Keystone",
         "required": "1",
-        "shortdesc": "auth_url to connect to Mistral",
+        "shortdesc": "auth_url to connect to Keystone",
         "default": "",
         "order": 5,
     }
@@ -66,6 +66,29 @@ def define_new_opts():
         "default": "",
         "order": 5,
     }
+    all_opt["mistral_url"] = {
+        "getopt": "m:",
+        "longopt": "mistral_url",
+        "help": "-m, --mistral_url=string URL where Mistral is listening",
+        "required": "1",
+        "shortdesc": "URL where Mistral is listening",
+        "default": "",
+        "order": 5,
+    }
+    all_opt["on_shared_storage"] = {
+        "getopt": "o:",
+        "longopt": "on_shared_storage",
+        "help": "-o, --on_shared_storage=string set to true if OpenStack uses"
+                "shared storage",
+        "required": "1",
+        "shortdesc": "set to true if OpenStack uses shared storage",
+        "default": "",
+        "order": 5,
+    }
+
+
+def str2bool(v):
+    return v.lower() in ("yes", "true", "t", "1")
 
 
 def format_message(host, on_shared_storage):
@@ -73,24 +96,24 @@ def format_message(host, on_shared_storage):
         "search_opts": {
             "host": host
         },
-        "on_shared_storage": on_shared_storage,
-        "flavor_extra_specs": {
-            "evacuation:evacuate": True
-        }
+        "on_shared_storage": on_shared_storage
     }
     return result
 
 
 def evacuate(host, options):
+    mistral_url = options["--mistral_url"]
     user = options["--user"]
     password = options["--password"]
     tenant = options["--tenant"]
     auth_url = options["--auth_url"]
     wf_name = options["--wf_name"]
+    on_shared_storage = str2bool(options["--on_shared_storage"])
 
-    input_json = format_message(host, False)
+    input_json = format_message(host, on_shared_storage)
 
     mistral = client.client(
+        mistral_url=mistral_url,
         username=user,
         api_key=password,
         project_name=tenant,
@@ -105,7 +128,7 @@ def main():
     atexit.register(atexit_handler)
 
     device_opt = ["user", "domain", "password", "tenant", "auth_url",
-                  "wf_name", "port"]
+                  "wf_name", "port", "mistral_url", "on_shared_storage"]
     define_new_opts()
     all_opt["shell_timeout"]["default"] = "180"
 
@@ -133,8 +156,6 @@ def main():
             sys.exit(1)
 
         evacuate(host, options)
-        logging.error('Cannot connect to mistral')
-        sys.exit(1)
 
     sys.exit(0)
 
